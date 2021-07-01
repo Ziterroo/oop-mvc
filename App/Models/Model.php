@@ -11,13 +11,35 @@ abstract class Model
 
     public int $id;
 
-    /**
-     * @return array
-     */
     public static function findAll(): array
     {
-        $db = new Db();
+        $db = Db::instance();
         $sql = 'SELECT * FROM ' . static::TABLE;
-        return $db->query( $sql, static::class, []);
+        return $db->query($sql, static::class);
     }
+
+
+    public function insert()
+    {
+        $properties = get_object_vars($this);
+
+        $values = [];
+        $binds = [];
+        $data = [];
+
+        foreach ($properties as $key => $property) {
+            $values[] = $key;
+            $binds[] = ':' . $key;
+            $data[':' . $key] = $property;
+        }
+
+        $sql = 'INSERT INTO ' . static::TABLE
+            . ' (' . implode(',', $values) . ')'
+            . ' VALUES(' . implode(',', $binds) . ')';
+        $db = Db::instance();
+        $db->execute($sql, $data);
+        $this->id = $db->lastId();
+    }
+
+
 }
