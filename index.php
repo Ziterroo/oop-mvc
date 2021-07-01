@@ -2,10 +2,12 @@
 
 require_once __DIR__ . "/autoload.php";
 
-use App\Models\Article;
-use App\Models\User;
+use App\Models\Product;
 
-$data = Article::findAll();
-$user = User::findAll();
-var_dump($data);
-var_dump($user);
+
+$product = new Product();
+$product->title = 'Samsung galaxy s21 ultra ';
+$product->description = '108mp 500max corning gorilla glass 5 color: black';
+$product->price = 3399;
+$product->insert();
+var_dump($product);

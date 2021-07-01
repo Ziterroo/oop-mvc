@@ -8,8 +8,17 @@ use PDO;
 class Db
 {
     protected object $dbh;
+    protected static ?object $instance = null;
 
-    public function __construct()
+    public static function instance(): object
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    protected function __construct()
     {
         $config = (require __DIR__ . "/../config.php")['db'];
         $this->dbh = new PDO(
@@ -18,27 +27,21 @@ class Db
         );
     }
 
-    /**
-     * @param string $sql
-     * @param string $class
-     * @param array $data
-     * @return array
-     */
-    public function query(string $sql, string $class, array $data = []): array
+    public function query(string $sql, string $class): array
     {
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($data);
-        $data = $sth->fetchAll();
-        $ret = [];
-        foreach ($data as $row) {
-            $item = new $class;
-            foreach ($row as $key => $value) {
-                if (!is_numeric($key)) {
-                    $item->$key = $value;
-                }
-            }
-            $ret[] = $item;
-        }
-        return $ret;
+        $sth->execute();
+        return $sth->fetchAll(PDO::FETCH_CLASS, $class);
+    }
+
+    public function execute(string $sql, array $data): bool
+    {
+        $sth = $this->dbh->prepare($sql);
+        return $sth->execute($data);
+    }
+
+    public function lastId(): string
+    {
+        return $this->dbh->lastInsertId();
     }
 }
