@@ -11,13 +11,19 @@ abstract class Model
 
     public int $id;
 
+    public function __construct(array $data = [])
+    {
+        foreach ($data as $key => $datum) {
+            $this->$key = $datum;
+        }
+    }
+
     public static function findAll(): array
     {
         $db = Db::instance();
         $sql = 'SELECT * FROM ' . static::TABLE;
         return $db->query($sql, static::class);
     }
-
 
     public function insert()
     {
@@ -40,6 +46,4 @@ abstract class Model
         $db->execute($sql, $data);
         $this->id = $db->lastId();
     }
-
-
 }

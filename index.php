@@ -2,13 +2,12 @@
 
 require_once __DIR__ . "/autoload.php";
 
-use App\Models\Product;
-use App\Models\Service;
-use App\View;
+$controller = $_GET['ctrl'] ?? 'Index';
 
-$view = new View();
-
-$view->products = Product::findAll();
-$view->services = Service::findAll();
-
-$view->view("/app/templates/index.php");
+$class = '\\App\Controller\\' . $controller;
+if (class_exists($class)) {
+    $controller = new $class;
+    $controller();
+} else {
+    die('Страница не найдена');
+}
