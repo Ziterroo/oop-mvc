@@ -1,3 +1,5 @@
+<?php
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,20 +13,18 @@
 </head>
 <body>
 
-<h1>Товары</h1>
+<h1>Товар <?= $this->product->title ?></h1>
 <table class="table table-secondary table-hover">
     <tr>
         <th>ID</th>
         <th>Наименование</th>
         <th>Цена</th>
     </tr>
-    <?php foreach ($this->products as $product): ?>
         <tr>
-            <td><?= $product->id ?></td>
-            <td><a href="/index.php/?ctrl=product&id=<?= $product->id?>"><?= $product->title ?></a></td>
-            <td><?= $product->price ?></td>
+            <td><?= $this->product->id ?></td>
+            <td><?= $this->product->title ?></td>
+            <td><?= $this->product->price ?></td>
         </tr>
-    <?php endforeach; ?>
 </table>
 </body>
 </html>
