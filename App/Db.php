@@ -27,10 +27,14 @@ class Db
         );
     }
 
-    public function query(string $sql, string $class): array
+
+    public function query(string $sql, string $class, $params = []): array
     {
         $sth = $this->dbh->prepare($sql);
-        $sth->execute();
+        $result = $sth->execute($params);
+        if (!$result) {
+            throw new \Exception('Ошибка запроса: ' . $sql, 404);
+        }
         return $sth->fetchAll(PDO::FETCH_CLASS, $class);
     }
 
